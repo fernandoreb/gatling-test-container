@@ -1,0 +1,83 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: rh-sso-gatling-test-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rh-sso-gatling-test
+  labels:
+    app: rh-sso-gatling-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deploymentconfig: rh-sso-gatling-test
+      version: "1.0"
+  template:
+    metadata:
+      labels:
+        deploymentconfig: rh-sso-gatling-test
+        version: "1.0"
+        app: rh-sso-gatling-test
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      volumes:
+        - name: rh-sso-gatling-test-claim
+          persistentVolumeClaim:
+            claimName: rh-sso-gatling-test-claim
+      containers:
+        - name: rh-sso-gatling-test
+          image: quay.io/rh_ee_fguimara/rh-sso-gatling-test:1.0.11
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BASE_URL
+              value: "http://keycloak-http.rhsso.svc.cluster.local:8080"
+            - name: REQUEST_PER_SECOND
+              value: "10f"
+            - name: DURATION_MIN
+              value: "1"
+            - name: P95_RESPONSE_TIME_MS
+              value: "1000"
+            - name: CLIENT
+              value: "stress-test"
+            - name: SECRET
+              value: "cEs9QvpTR3qbFYM8T71vHvdPr3SA7dmb"
+            - name: REALM
+              value: "teste"
+            - name: USER
+              value: "teste"
+            - name: PASSWORD
+              value: "teste1234"
+          volumeMounts:
+            - name: rh-sso-gatling-test-claim
+              mountPath: /root/.m2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rh-sso-gatling-test
+  labels:
+    app: rh-sso-gatling-test
+spec:
+  type: NodePort
+  selector:
+    app: rh-sso-gatling-test
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
