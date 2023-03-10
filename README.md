@@ -25,7 +25,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: keycloak-http
-  namespace: rhsso
 spec:
   ports:
     - name: keycloak
@@ -42,8 +41,9 @@ Executar teste a partir do terminal
 curl --location --request POST 'http://localhost:8080/api/stresstest' --header 'Content-Type: application/json' --data-raw '{ "name": "teste1" }'
 ~~~
 
+Relatorio
 ~~~
-https://rh-sso-gatling-app-test.apps.cluster-5ckz7.5ckz7.sandbox118.opentlc.com/api/stresstest/download?report=teste1
+https://report-rhsso-teste.apps.cluster-zvgbt.zvgbt.sandbox636.opentlc.com/api/stresstest/download?report=teste1
 ~~~
 
 Testar keycloak
