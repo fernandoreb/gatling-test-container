@@ -15,8 +15,8 @@ oc apply -f app-manifest.yaml -n ${NAMESPACE}
 Montagem da imagem - se necessário - substituir vrf
 ~~~
 mvn clean package
-podman build . -t quay.io/rh_ee_fguimara/rh-sso-gatling-test:1.0.5
-podman push quay.io/rh_ee_fguimara/rh-sso-gatling-test:1.0.5
+podman build . -t quay.io/rh_ee_fguimara/rh-sso-gatling-test:x.y.z
+podman push quay.io/rh_ee_fguimara/rh-sso-gatling-test:x.y.z
 ~~~
 
 Criando porta 8080 no rh-sso

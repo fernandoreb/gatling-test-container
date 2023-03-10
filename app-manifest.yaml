@@ -39,7 +39,7 @@ spec:
             claimName: rh-sso-gatling-test-claim
       containers:
         - name: rh-sso-gatling-test
-          image: quay.io/rh_ee_fguimara/rh-sso-gatling-test:1.0.11
+          image: quay.io/rh_ee_fguimara/rh-sso-gatling-test:1.0.12
           ports:
             - containerPort: 8080
           env:
