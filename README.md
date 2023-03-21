@@ -1,18 +1,18 @@
 # Teste de Carga em Containers com Gatling
 
-Esta aplicação utiliza o framework gatling para a realização de testes de carga. Os testes aqui definidos foram utilizados aplicar uma carga no endpoint de token do RH-SSO/Keycloak. Mas podem ser utilizados para testar outras APIs.
+Esta aplicação utiliza o framework gatling para a realização de testes de carga. Os testes aqui definidos foram utilizados aplicar uma carga no endpoint de token do RH-SSO/Keycloak. Mas podem ser utilizados para testar outras APIs.   
 
 Maiores informações:  
-https://gatling.io/
+https://gatling.io/   
 
-O Gatling basea-se na implementação de classes de teste utilizando o framework para disparar as cargas.
+O Gatling basea-se na implementação de classes de teste utilizando o framework para disparar as cargas.   
 
-No caso desta aplicação, criamos uma aplicação que expõe 2 endpoints:
+No caso desta aplicação, criamos uma aplicação que expõe 2 endpoints:   
 
-1 - Endpoint que dispara o teste (que por baixo chama o teste unitário)
-2 - Endpoint para coleta do relatório gerado pelo Gatling.
+1 - Endpoint que dispara o teste (que por baixo chama o teste unitário)   
+2 - Endpoint para coleta do relatório gerado pelo Gatling.   
 
-Como estamos falando de teste unitário (mvn gatling:test) o container precisa de acesso a internet para baixar os pacotes e depois executar os testes. Como forma de melhorar a performance, montamos um volume persistente para set utilizado pelo maven. Assim ficando mais rápida as execuções.
+Como estamos falando de teste unitário (mvn gatling:test) o container precisa de acesso a internet para baixar os pacotes e depois executar os testes. Como forma de melhorar a performance, montamos um volume persistente para set utilizado pelo maven. Assim ficando mais rápida as execuções.   
 
 Exemplo de caso de teste escrito para testar o endpoint token com grant_type password
 ~~~
@@ -40,9 +40,9 @@ public class RHSSORequestSimulationTokenUser extends Simulation {
 }
 ~~~
 
-Da forma como foi implementado, o teste irá executar todas as classes de teste contidas na pasta test. Pode-se renomear a extensão .java para evitar que o teste seja executado. Uma melhoria futura seria indicar no endpoint de início, qual caso de teste executar e suas parametrizações.
+Da forma como foi implementado, o teste irá executar todas as classes de teste contidas na pasta test. Pode-se renomear a extensão .java para evitar que o teste seja executado. Uma melhoria futura seria indicar no endpoint de início, qual caso de teste executar e suas parametrizações.   
 
-Se as classes forem alteradas é necessário gerar uma nova imagem:
+Se as classes forem alteradas é necessário gerar uma nova imagem:   
 
 Montagem da imagem - se necessário - substituir vrf e atentar ao registry
 ~~~
@@ -53,7 +53,7 @@ podman push quay.io/rh_ee_fguimara/rh-sso-gatling-test:x.y.z
 
 ## Montagem do ambiente no cluster
 
-Criar uma namespace
+Criar uma namespace   
 
 Para facilitar usaremos em uma ENV
 ~~~
@@ -106,7 +106,7 @@ O arquivo *app-manifest.yaml* contém uma sessão de environments que deve ser a
             - name: PASSWORD // e senha
               value: "teste1234"
 ~~~
-Lembrando de desmarcar a opção de troca de senha na criação do usuário no rhsso
+Lembrando de desmarcar a opção de troca de senha na criação do usuário no rhsso.
 
 
 ### Criando a aplicação
@@ -122,6 +122,7 @@ curl --location --request POST 'http://localhost:8080/api/stresstest' --header '
 ~~~
 
 #### Consultando o resultado 
+
 O Gatling gera um report com o resultado do teste. Pode-se export a rota da aplicação e obter pelo path: 
 ~~~
 /api/stresstest/download?report=<nome informado na execução - campo name>
@@ -132,7 +133,7 @@ Exemplo solicitando relatorio (via browser)
 https://report-rhsso-teste.apps.cluster-zvgbt.zvgbt.sandbox636.opentlc.com/api/stresstest/download?report=teste1
 ~~~
 
-A execução também pode ser realizada a patir da rota externa.
+A execução também pode ser realizada a patir da rota externa.   
 
 Exemplo:
 ~~~
@@ -141,7 +142,7 @@ curl --location --request POST 'https://report-rhsso-teste.apps.cluster-zvgbt.zv
 
 #### Valiando os acessos
 
-Para validar os acessos, pode-se testar keycloak diretamente com os parãmetros a serem utilizados no teste de carga.
+Para validar os acessos, pode-se testar keycloak diretamente com os parãmetros a serem utilizados no teste de carga.   
 
 Exemplo - grant_type = password
 ~~~
