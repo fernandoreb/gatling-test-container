@@ -1,4 +1,4 @@
-Teste de Carga em Containers com Gatling
+# Teste de Carga em Containers com Gatling
 
 Esta aplicação utiliza o framework gatling para a realização de testes de carga. Os testes aqui definidos foram utilizados aplicar uma carga no endpoint de token do RH-SSO/Keycloak. Mas podem ser utilizados para testar outras APIs.
 
@@ -51,7 +51,7 @@ podman build . -t quay.io/rh_ee_fguimara/rh-sso-gatling-test:x.y.z
 podman push quay.io/rh_ee_fguimara/rh-sso-gatling-test:x.y.z
 ~~~
 
-Montagem do ambiente no cluster
+## Montagem do ambiente no cluster
 
 Criar uma namespace
 
@@ -82,7 +82,7 @@ spec:
     component: keycloak
 ~~~
 
-Parametrizações
+### Parametrizações
 
 O arquivo *app-manifest.yaml* contém uma sessão de environments que deve ser atualizada de acordo as configurações do rhsso.
 ~~~
@@ -109,16 +109,19 @@ O arquivo *app-manifest.yaml* contém uma sessão de environments que deve ser a
 Lembrando de desmarcar a opção de troca de senha na criação do usuário no rhsso
 
 
-Criando a aplicação
+### Criando a aplicação
 ~~~
 oc apply -f app-manifest.yaml -n ${NAMESPACE}
 ~~~
 
-Executar teste a partir do terminal da aplicação criada
+### Rodando os testes 
+
+#### Executar teste a partir do terminal da aplicação criada
 ~~~
 curl --location --request POST 'http://localhost:8080/api/stresstest' --header 'Content-Type: application/json' --data-raw '{ "name": "teste1" }'
 ~~~
 
+#### Consultando o resultado 
 O Gatling gera um report com o resultado do teste. Pode-se export a rota da aplicação e obter pelo path: 
 ~~~
 /api/stresstest/download?report=<nome informado na execução - campo name>
@@ -135,6 +138,8 @@ Exemplo:
 ~~~
 curl --location --request POST 'https://report-rhsso-teste.apps.cluster-zvgbt.zvgbt.sandbox636.opentlc.com/api/stresstest' --header 'Content-Type: application/json' --data-raw '{ "name": "teste1" }'
 ~~~
+
+#### Valiando os acessos
 
 Para validar os acessos, pode-se testar keycloak diretamente com os parãmetros a serem utilizados no teste de carga.
 
